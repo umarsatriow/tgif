@@ -1,6 +1,9 @@
 <?php
 
 namespace Fir\Models;
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
  
 class User extends Model {
 
@@ -17,28 +20,38 @@ class User extends Model {
         var_dump($param);
     }
 
-    public function tes($params) {
-        $insData = array(
-            'id' => null,
-            'firstname' => $params['firstname'],
-            'lastname' => $params['lastname'],
-            'email' => $params['email'],
-            'telp' => $params['telp'],
-            'password' => md5($params['password'])
-        );
-
-        $sql = "INSERT INTO user (firstname, lastname, email, telp, password)
-        VALUES ('John', 'Doe', 'john@example.com', 'email', 'telp')";
-
-        $query = $this->db->prepare($sql);
-        $hm = $query->execute();
-        $query->close();
-        if($hm){
-            echo $hm->get_result();
-        }else{
-            $hm->error;
+    public function proceedRegister($param){
+        $link_activation_email = 'http://localhost/tgif/preferences/confirm?email='.urlencode($param);
+        if(sendConfirmationEmail($param['email'], 'third2014project@gmail.com', 'Multazam Arorihan', 'No-Reply Email activation link', 'please click the following link to activate your tgif account, thanks for joining us! '.$link_activation_email) == true){
+            $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$params['password']."')");
+            $query->execute();
+            $query->close();
+            echo "<script>alert('Registrasi Success klik Oke untuk melanjutkan'); location.href='preferences/home'</script>";
         }
-	}
+    }
+
+    function sendConfirmationEmail($to, $from, $from_name, $subject, $body){
+        $mail = new PHPMailer();
+        $mail->IsSMTP(); // enable SMTP
+        $mail->SMTPDebug = 0;  // debugging: 1 = errors and messages, 2 = messages only
+        $mail->SMTPAuth = true;  // authentication enabled
+        $mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
+        $mail->Host = 'smtp.gmail.com';
+        $mail->Port = 465; 
+        $mail->Username = "EMAIL_GMAIL_MU";  
+        $mail->Password = "PASSWORD_GMAIL_MU";
+        $mail->SetFrom($from, $from_name);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+        $mail->AddAddress($to);
+        if(!$mail->Send()) {
+            $error = 'Mail error: '.$mail->ErrorInfo; 
+            return false;
+        } else {
+            $error = 'Message sent!';
+            return true;
+        }
+    }
     
     public function checkEmailAvaibility($email){
         $querySelectEmail = $this->db->prepare("SELECT * FROM `user` WHERE `email`='$email'");

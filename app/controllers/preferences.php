@@ -140,7 +140,9 @@ class Preferences extends Controller {
     {
         $this->user = $this->model('User');
         if($this->user->checkEmailAvaibility($email) == false){
-            $this->user->tes($_POST);
+            if($this->user->proceedRegister($_POST)){
+                
+            }
         }
     }
 
