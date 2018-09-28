@@ -158,9 +158,19 @@ class Preferences extends Controller {
 
     public function proses_login()
     {
-        $this->user = $this->model('Login');
-        $this->user->login($_POST);
-        echo "<script>alert('Login Success klik Oke untuk melanjutkan'); location.href='/localhost/tgif/'</script>";
+        $this->user = $this->model('User');
+        $this->login = $this->model('Login');
+        //checking is user already activated?
+        if($this->user->checkEmailActiveValue($_POST['email']) == 1){
+            //logging in
+            if($this->login($_POST) == true){ //if wrong username and password
+                echo "<script>alert('Login Success klik Oke untuk melanjutkan'); location.href='/tgif/'</script>";
+            }else{ //if username and password true
+                echo "<script>alert('Invalid username or password'); location.href='/tgif/'</script>";
+            }
+        }else{ //else the user not active
+            echo "<script>alert('Silahkan cek email anda untuk aktivasi akun'); location.href='/tgif/'</script>";
+        }
     }
 
     /**

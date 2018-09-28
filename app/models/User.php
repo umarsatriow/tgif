@@ -1,9 +1,13 @@
 <?php
 
 namespace Fir\Models;
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../libraries/PHPMailer/src/Exception.php';
+require '../libraries/PHPMailer/src/PHPMailer.php';
+require '../libraries/PHPMailer/src/SMTP.php';
  
 class User extends Model {
 
@@ -22,31 +26,22 @@ class User extends Model {
 
     public function proceedRegister($params){
         $link_activation_email = 'http://localhost/tgif/preferences/confirm?email='.urlencode($params['email']);
-        if(sendConfirmationEmail($param['email'], 'third2014project@gmail.com', 'Multazam Arorihan', 'No-Reply Email activation link', 'please click the following link to activate your tgif account, thanks for joining us! '.$link_activation_email) == true){
+        if($this->sendConfirmationEmail($params['email'], 'third2014project@gmail.com', 'Multazam Arorihan', 'No-Reply Email activation link', 'please click the following link to activate your tgif account, thanks for joining us! '.$link_activation_email) == true){
+            var_dump($param);
             $hash = md5($params['password']);
             $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$hash."')");
             $query->execute();
             $query->close();
             echo "<script>alert('Registrasi Success klik Oke untuk melanjutkan'); location.href='preferences/home'</script>";
-
-            // $cek_email=mysqli_num_rows($tes_email);
-            // if ($cek_email==1) {
-            //  echo "<script>alert('Email sudah digunakan'); location.href='preferences/daftar'</script>";
-            // }
-            // else
-            //  if($cek_email==0){
-            
-            
-            //$query->bind_param('sssss', $params['firstname'], $params['lastname'], $params['email'], $params['telp'], $params['password']);
         }
     }
 
-    function sendConfirmationEmail($to, $from, $from_name, $subject, $body){
+    public function sendConfirmationEmail($to, $from, $from_name, $subject, $body){
         $mail = new PHPMailer();
-        $mail->IsSMTP(); // enable SMTP
-        $mail->SMTPDebug = 0;  // debugging: 1 = errors and messages, 2 = messages only
-        $mail->SMTPAuth = true;  // authentication enabled
-        $mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
+        $mail->IsSMTP(); 
+        $mail->SMTPDebug = 0;  
+        $mail->SMTPAuth = true; 
+        $mail->SMTPSecure = 'ssl'; 
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 465; 
         $mail->Username = "EMAIL_GMAIL_MU";  
