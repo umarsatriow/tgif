@@ -18,38 +18,26 @@ class User extends Model {
     }
 
     public function tes($params) {
-		/* $firstname = $params['firstname'];
-        $lastname = $params['lastname'];
-        $email = $params['email'];
-        $telp = $params['telp'];
-        $password = $params['password']; */
-        $query1 = $this->db->prepare("SELECT * FROM `user` WHERE `email`='".$params['email']."'");
-        //$query->bind_param('sssss', $params['firstname'], $params['lastname'], $params['email'], $params['telp'], $params['password']);
+        $insData = array(
+            'id' => null,
+            'firstname' => $params['firstname'],
+            'lastname' => $params['lastname'],
+            'email' => $params['email'],
+            'telp' => $params['telp'],
+            'password' => md5($params['password'])
+        );
 
-        $query1->execute();
-        $result = $query1->get_result()->num_rows;
-        $query1->close();
+        $sql = "INSERT INTO user (firstname, lastname, email, telp, password)
+        VALUES ('John', 'Doe', 'john@example.com', 'email', 'telp')";
 
-        if($result>0){
-            echo "<script>alert('sudah ada'); location.href='preferences/register'; </script>";
-            return;
-        }
-        
-        //$tes_email=mysqli_query($konek,"SELECT * FROM `user` WHERE `email`='$email'");
-
-	    //$cek_email=mysqli_num_rows($tes_email);
-	    //if ($cek_email==1) {
-	    //  echo "<script>alert('Email sudah digunakan');      location.href='preferences/daftar'</script>";
-	    // }
-	    // else
-	    // 	if($cek_email==0){
-
-        $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$params['password']."')");
-        //$query->bind_param('sssss', $params['firstname'], $params['lastname'], $params['email'], $params['telp'], $params['password']);
-        $query->execute();
+        $query = $this->db->prepare($sql);
+        $hm = $query->execute();
         $query->close();
-        //return;
-		echo "<script>alert('Registrasi Success klik Oke untuk melanjutkan'); location.href='preferences/home'</script>";
+        if($hm){
+            echo $hm->get_result();
+        }else{
+            $hm->error;
+        }
 	}
     
     public function checkEmailAvaibility($email){
@@ -57,12 +45,12 @@ class User extends Model {
         $querySelectEmail->execute();
         $queryCount = $querySelectEmail->get_result()->num_rows;
         $querySelectEmail->close();
-        if($queryCount > 0){
+        if($queryCount == 0){
             return true;
         }else{
             return false;
         }
-        return $queryCount;
+        //output: true -> email belum terdaftar; false -> email sudah terdaftar;
     }
 
     public function checkEmailActiveValue($email){

@@ -122,7 +122,7 @@ class Preferences extends Controller {
         $email = urldecode($_GET['email']);
         $this->user = $this->model('User');
         //cek apakah email terdaftar
-        if($this->user->checkEmailAvaibility($email)){
+        if($this->user->checkEmailAvaibility($email) == false){
             //cek apakah email tersebut belum aktif
             if($this->user->checkEmailActiveValue($email) == 0){
                 //update value dari 0 ke 1
@@ -138,9 +138,10 @@ class Preferences extends Controller {
 
     public function proses_register()
     {
-        // var_dump($_POST);
         $this->user = $this->model('User');
-        $this->user->tes($_POST);
+        if($this->user->checkEmailAvaibility($email) == false){
+            $this->user->tes($_POST);
+        }
     }
 
     public function login()
