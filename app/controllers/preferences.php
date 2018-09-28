@@ -143,7 +143,7 @@ class Preferences extends Controller {
         $this->user = $this->model('Login');
 
         $this->user->login($_POST);
-        echo "<script>alert('Login Success klik Oke untuk melanjutkan'); location.href='preferences/home'</script>";
+        echo "<script>alert('Login Success klik Oke untuk melanjutkan'); location.href='/localhost/tgif/'</script>";
     }
     public function confirmemail($email)
     {

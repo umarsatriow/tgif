@@ -16,6 +16,7 @@ class User extends Model {
         var_dump($param);
     }
     public function tes($params) {
+         
 		
 		// $firstname = $params['firstname'];
   //       $lastname = $params['lastname'];
@@ -43,8 +44,9 @@ class User extends Model {
 	// }
 	// else
 	// 	if($cek_email==0){
-
-        $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$params['password']."')");
+$hash = md5($params['password']);
+        $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$hash."')");
+        
         //$query->bind_param('sssss', $params['firstname'], $params['lastname'], $params['email'], $params['telp'], $params['password']);
         $query->execute();
         $query->close();
