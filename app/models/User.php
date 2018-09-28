@@ -20,8 +20,8 @@ class User extends Model {
         var_dump($param);
     }
 
-    public function proceedRegister($param){
-        $link_activation_email = 'http://localhost/tgif/preferences/confirm?email='.urlencode($param);
+    public function proceedRegister($params){
+        $link_activation_email = 'http://localhost/tgif/preferences/confirm?email='.urlencode($params['email']);
         if(sendConfirmationEmail($param['email'], 'third2014project@gmail.com', 'Multazam Arorihan', 'No-Reply Email activation link', 'please click the following link to activate your tgif account, thanks for joining us! '.$link_activation_email) == true){
             $query = $this->db->prepare("INSERT INTO `user` VALUES('','".$params['firstname']."','".$params['lastname']."','".$params['email']."','".$params['telp']."','".$params['password']."')");
             $query->execute();
