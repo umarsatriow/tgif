@@ -106,49 +106,61 @@ class Preferences extends Controller {
         $this->view->metadata['title'] = [$this->lang['preferences'], $this->lang['search']];
         return ['content' => $this->view->render($data, 'preferences/content')];
     }
+
     public function register()
     {
-         $data['menu_view'] = $this->menu();
-
-         $data['preferences_view'] = $this->view->render($data, 'preferences/register');
-
+        $data['menu_view'] = $this->menu();
+        $data['preferences_view'] = $this->view->render($data, 'preferences/register');
         $data['page_title'] = $this->lang['register'];
 
         $this->view->metadata['title'] = [$this->lang['preferences'], $this->lang['register']];
         return ['content' => $this->view->render($data, 'preferences/content')];
     }
+
+    public function confirm()
+    {
+        $email = urldecode($_GET['email']);
+        $this->user = $this->model('User');
+        //cek apakah email terdaftar
+        if($this->user->checkEmailAvaibility($email) == false){
+            //cek apakah email tersebut belum aktif
+            if($this->user->checkEmailActiveValue($email) == 0){
+                //update value dari 0 ke 1
+                $this->user->updateEmailActiveValue($email);
+                echo "<script>alert('Aktivasi email berhasil, silahkan login'); location.href='preferences/login'</script>";
+            }else{
+                echo "<script>alert('Link tidak valid'); location.href='preferences/login'</script>";
+            }
+        }else{
+            echo "<script>alert('Link tidak valid'); location.href='preferences/login'</script>";
+        }
+    }
+
     public function proses_register()
     {
-
-// var_dump($_POST);
         $this->user = $this->model('User');
-        $this->user->tes($_POST);
+        if($this->user->checkEmailAvaibility($email) == false){
+            if($this->user->proceedRegister($_POST)){
+                
+            }
+        }
     }
 
     public function login()
     {
-         $data['menu_view'] = $this->menu();
-
-          $data['preferences_view'] = $this->view->render($data, 'preferences/login');
-
-
-
+        $data['menu_view'] = $this->menu();
+        $data['preferences_view'] = $this->view->render($data, 'preferences/login');
         $data['page_title'] = $this->lang['login'];
 
         $this->view->metadata['title'] = [$this->lang['preferences'], $this->lang['login']];
         return ['content' => $this->view->render($data, 'preferences/content')];
     }
+
     public function proses_login()
     {
         $this->user = $this->model('Login');
-
         $this->user->login($_POST);
         echo "<script>alert('Login Success klik Oke untuk melanjutkan'); location.href='/localhost/tgif/'</script>";
-    }
-    public function confirmemail($email)
-    {
-        $this->user = $this->model('User');
-        $this->user->confirmemail($_GET['email']);
     }
 
     /**
