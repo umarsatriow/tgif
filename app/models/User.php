@@ -2,14 +2,16 @@
 
 namespace Fir\Models;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// require_once(__DIR__ . '/../libraries/PHPMailer/src/Exception.php');
+// require_once(__DIR__ . '/../libraries/PHPMailer/src/PHPMailer.php');
+// require_once(__DIR__ . '/../libraries/PHPMailer/src/SMTP.php');
 
-require '../libraries/PHPMailer/src/Exception.php';
-require '../libraries/PHPMailer/src/PHPMailer.php';
-require '../libraries/PHPMailer/src/SMTP.php';
- 
+    require('../libraries/PHPMailer/src/PHPMailer.php');
+    require('../libraries/PHPMailer/src/SMTP.php');
+
 class User extends Model {
+
+
 
     public function register()
     {
